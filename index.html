@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Previsão do Tempo</title>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Previsão do Tempo</h1>
+        <div class="form-container">
+            <label for="cidade">Digite sua Cidade:</label>
+            <input type="text" id="cidade" placeholder="Ex: São Paulo" />
+            <button onclick="chamarServicoTempo()">Pesquisar Tempo</button>
+        </div>
+
+        <div id="weather-info" class="weather-info semborda">
+            <h2><span id="nome-cidade"></span></h2>
+            <ul>
+                <li><span class="label">Temperatura:</span> <span id="temperatura"></span>°C</li>
+                <li><span class="label">Sensação Térmica:</span> <span id="feels_like"></span>°C</li>
+                <li><span class="label">Umidade:</span> <span id="humidity"></span>%</li>
+                <li><span class="label">Pressão:</span> <span id="pressure"></span>hPa</li>
+                <li><span class="label">Nível do Solo:</span> <span id="grnd_level"></span></li>
+                <li><span class="label">Nível do Mar:</span> <span id="sea_level"></span></li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function chamarServicoTempo() {
+            var cidade = document.getElementById('cidade').value;
+
+            fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cidade}&appid=2ab104940ca53bb2dfdcc4a83fad5b62`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Resposta não é OK');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById("nome-cidade").textContent = data.name;
+                    document.getElementById("temperatura").textContent = (data.main.temp / 10).toFixed(1);
+                    document.getElementById("feels_like").textContent = (data.main.feels_like / 10).toFixed(1);
+                    document.getElementById("grnd_level").textContent = data.main.grnd_level;
+                    document.getElementById("humidity").textContent = data.main.humidity;
+                    document.getElementById("pressure").textContent = data.main.pressure;
+                    document.getElementById("sea_level").textContent = data.main.sea_level;
+                })
+                .catch(error => {
+                    alert("Erro ao requisitar serviço em nuvem!");
+                    console.error("Erro ao requisitar serviço em nuvem!", error);
+                });
+        }
+    </script>
+</body>
+
+</html>
